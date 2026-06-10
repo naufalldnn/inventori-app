@@ -45,6 +45,7 @@
                     }
 
                     if ($user->role === 'user') {
+                        $links[] = ['Keranjang', 'cart.view'];
                         $links[] = ['Checkout', 'checkout.index'];
                     }
 

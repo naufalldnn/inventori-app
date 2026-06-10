@@ -113,6 +113,107 @@ class CheckoutController extends Controller
         }
     }
 
+    public function checkoutFromCart(Request $request)
+    {
+        try {
+            $user = Auth::user();
+            $cartItems = $user->cartItems()->with('item')->get();
+
+            if ($cartItems->isEmpty()) {
+                return redirect()->route('cart.view')->with('error', 'Keranjang kosong.');
+            }
+
+            $total = $cartItems->sum('subtotal');
+
+            if ($total < 1000) {
+                return redirect()->route('cart.view')->with('error', 'Total pembayaran minimal Rp 1.000.');
+            }
+
+            // Check stock availability
+            foreach ($cartItems as $cartItem) {
+                if ($cartItem->item->stock < $cartItem->quantity) {
+                    return redirect()->route('cart.view')
+                        ->with('error', 'Stok tidak cukup untuk: ' . $cartItem->item->name);
+                }
+            }
+
+            // Create order
+            $invoiceNumber = Order::generateInvoiceNumber();
+            $order = Order::create([
+                'user_id' => $user->id,
+                'invoice_number' => $invoiceNumber,
+                'amount' => $total,
+                'description' => 'Pesanan dari keranjang',
+                'status' => 'pending',
+                'payment_method' => 'doku',
+            ]);
+
+            // Create order items
+            $orderItems = [];
+            foreach ($cartItems as $cartItem) {
+                $orderItems[] = [
+                    'order_id' => $order->id,
+                    'item_id' => $cartItem->item->id,
+                    'quantity' => $cartItem->quantity,
+                    'price' => $cartItem->item->price,
+                ];
+            }
+            \App\Models\OrderItem::insert($orderItems);
+
+            Log::info('Order from cart created', [
+                'order_id' => $order->id,
+                'invoice_number' => $invoiceNumber,
+                'total' => $total,
+                'items_count' => count($cartItems),
+                'user_id' => $user->id,
+            ]);
+
+            if (! $this->dokuService->isConfigured()) {
+                $user->cartItems()->delete();
+                return redirect()
+                    ->route('dashboard')
+                    ->with('success', 'Pesanan berhasil dibuat. Pembayaran online belum aktif karena konfigurasi Doku belum lengkap.');
+            }
+
+            // Build items array for Doku
+            $dokuItems = $cartItems->map(function ($cartItem) {
+                return array_filter([
+                    'id' => (string) $cartItem->item->id,
+                    'name' => $cartItem->item->name,
+                    'quantity' => $cartItem->quantity,
+                    'price' => (int) round($cartItem->item->price),
+                    'sku' => $cartItem->item->code,
+                    'category' => 'retail',
+                    'type' => 'goods',
+                    'url' => route('dashboard'),
+                    'image_url' => $cartItem->item->media_type === 'image' ? $cartItem->item->media_url : null,
+                ]);
+            })->toArray();
+
+            // Generate Doku checkout URL
+            $checkoutUrl = $this->dokuService->createCheckoutUrl(
+                $invoiceNumber,
+                $total,
+                $user->name,
+                $user->email,
+                route('doku.return', ['invoice_number' => $invoiceNumber]),
+                'Pesanan dari keranjang',
+                $dokuItems
+            );
+
+            $order->update(['payment_url' => $checkoutUrl]);
+
+            // Clear cart
+            $user->cartItems()->delete();
+
+            // Redirect to Doku
+            return redirect($checkoutUrl);
+        } catch (\Exception $e) {
+            Log::error('Checkout from cart error: ' . $e->getMessage());
+            return back()->with('error', 'Terjadi kesalahan saat memproses checkout: ' . $e->getMessage());
+        }
+    }
+
     public function returnFromDoku(Request $request)
     {
         try {

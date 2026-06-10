@@ -55,12 +55,22 @@
                         </div>
                         <p class="mt-2 font-semibold text-ink">Rp {{ number_format($item->price, 0, ',', '.') }}</p>
                         <p class="mt-2 line-clamp-2 text-sm text-gray-600">{{ $item->description ?: 'Barang siap dipesan.' }}</p>
-                        <a
-                            href="{{ route('checkout.index', ['item_id' => $item->id, 'description' => 'Pesanan '.$item->name]) }}"
-                            class="mt-3 block rounded bg-ink px-3 py-2 text-center text-sm font-semibold text-white hover:bg-ink/90"
-                        >
-                            Pesan
-                        </a>
+                        <div class="mt-3 flex gap-2">
+                            <form method="post" action="{{ route('cart.add') }}" class="flex-1">
+                                @csrf
+                                <input type="hidden" name="item_id" value="{{ $item->id }}">
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="w-full rounded bg-ocean px-3 py-2 text-center text-sm font-semibold text-white hover:bg-ocean/90">
+                                    + Keranjang
+                                </button>
+                            </form>
+                            <a
+                                href="{{ route('checkout.index', ['item_id' => $item->id, 'description' => 'Pesanan '.$item->name]) }}"
+                                class="flex-1 rounded bg-ink px-3 py-2 text-center text-sm font-semibold text-white hover:bg-ink/90"
+                            >
+                                Pesan
+                            </a>
+                        </div>
                     </div>
                 </article>
             @empty
@@ -98,7 +108,13 @@
                         @foreach ($orders as $order)
                             <tr class="border-b last:border-0">
                                 <td class="px-4 py-3 font-mono text-sm font-medium text-ink">{{ $order->invoice_number }}</td>
-                                <td class="px-4 py-3 text-sm text-gray-700">{{ $order->item?->name ?? $order->description ?? '-' }}</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">
+                                    @if ($order->items()->exists())
+                                        {{ $order->items->pluck('item.name')->join(', ') }}
+                                    @else
+                                        {{ $order->item?->name ?? $order->description ?? '-' }}
+                                    @endif
+                                </td>
                                 <td class="px-4 py-3 text-sm">Rp {{ number_format($order->amount, 0, ',', '.') }}</td>
                                 <td class="px-4 py-3 text-sm">
                                     <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold
