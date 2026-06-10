@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CheckoutController;
@@ -39,6 +40,14 @@ Route::middleware('auth')->group(function () {
     // Checkout routes
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout/process', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
+
+    // Cart routes (dashboard only)
+    Route::get('/cart', [CartController::class, 'view'])->name('cart.view');
+    Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+    Route::patch('/cart/{cartItem}', [CartController::class, 'update'])->name('cart.update');
+    Route::delete('/cart/{cartItem}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
+    Route::post('/checkout/from-cart', [CheckoutController::class, 'checkoutFromCart'])->name('checkout.from-cart');
 
     Route::get('/tracking', [TrackingController::class, 'index'])->name('tracking.index');
     Route::post('/tracking', [TrackingController::class, 'track'])->name('tracking.track');

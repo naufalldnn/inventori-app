@@ -24,7 +24,7 @@ class DashboardController extends Controller
 
             return view('user.dashboard', [
                 'orderSummary' => $orderSummary,
-                'orders' => Order::with('item')
+                'orders' => Order::with(['item', 'items.item'])
                     ->where('user_id', $user->id)
                     ->latest()
                     ->paginate(10),

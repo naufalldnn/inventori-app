@@ -54,12 +54,22 @@
                         </div>
                         <p class="mt-2 font-semibold text-ink">Rp <?php echo e(number_format($item->price, 0, ',', '.')); ?></p>
                         <p class="mt-2 line-clamp-2 text-sm text-gray-600"><?php echo e($item->description ?: 'Barang siap dipesan.'); ?></p>
-                        <a
-                            href="<?php echo e(route('checkout.index', ['item_id' => $item->id, 'description' => 'Pesanan '.$item->name])); ?>"
-                            class="mt-3 block rounded bg-ink px-3 py-2 text-center text-sm font-semibold text-white hover:bg-ink/90"
-                        >
-                            Pesan
-                        </a>
+                        <div class="mt-3 flex gap-2">
+                            <form method="post" action="<?php echo e(route('cart.add')); ?>" class="flex-1">
+                                <?php echo csrf_field(); ?>
+                                <input type="hidden" name="item_id" value="<?php echo e($item->id); ?>">
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="w-full rounded bg-ocean px-3 py-2 text-center text-sm font-semibold text-white hover:bg-ocean/90">
+                                    + Keranjang
+                                </button>
+                            </form>
+                            <a
+                                href="<?php echo e(route('checkout.index', ['item_id' => $item->id, 'description' => 'Pesanan '.$item->name])); ?>"
+                                class="flex-1 rounded bg-ink px-3 py-2 text-center text-sm font-semibold text-white hover:bg-ink/90"
+                            >
+                                Pesan
+                            </a>
+                        </div>
                     </div>
                 </article>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
@@ -97,7 +107,15 @@
                         <?php $__currentLoopData = $orders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <tr class="border-b last:border-0">
                                 <td class="px-4 py-3 font-mono text-sm font-medium text-ink"><?php echo e($order->invoice_number); ?></td>
-                                <td class="px-4 py-3 text-sm text-gray-700"><?php echo e($order->item?->name ?? $order->description ?? '-'); ?></td>
+                                <td class="px-4 py-3 text-sm text-gray-700">
+                                    <?php if($order->items()->exists()): ?>
+                                        <?php echo e($order->items->pluck('item.name')->join(', ')); ?>
+
+                                    <?php else: ?>
+                                        <?php echo e($order->item?->name ?? $order->description ?? '-'); ?>
+
+                                    <?php endif; ?>
+                                </td>
                                 <td class="px-4 py-3 text-sm">Rp <?php echo e(number_format($order->amount, 0, ',', '.')); ?></td>
                                 <td class="px-4 py-3 text-sm">
                                     <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold
