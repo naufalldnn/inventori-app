@@ -1,0 +1,77 @@
+services:
+  app:
+    build: .
+    container_name: inventori_app
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - .:/var/www/html
+      - /var/www/html/vendor
+      - /var/www/html/node_modules
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.inventori.rule=Host(`inventori.localhost`) || Host(`localhost`)
+      - traefik.http.routers.inventori.entrypoints=web
+      - traefik.http.services.inventori.loadbalancer.server.port=8000
+    depends_on:
+      - reverb
+    networks:
+      - inventori
+
+  queue:
+    build: .
+    container_name: inventori_queue
+    restart: unless-stopped
+    env_file:
+      - .env
+    command: php artisan queue:work --sleep=3 --tries=3
+    volumes:
+      - .:/var/www/html
+      - /var/www/html/vendor
+      - /var/www/html/node_modules
+    networks:
+      - inventori
+
+  reverb:
+    build: .
+    container_name: inventori_reverb
+    restart: unless-stopped
+    env_file:
+      - .env
+    command: php artisan reverb:start --host=0.0.0.0 --port=6001
+    ports:
+      - "6001:6001"
+    volumes:
+      - .:/var/www/html
+      - /var/www/html/vendor
+      - /var/www/html/node_modules
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.inventori-reverb.rule=Host(`reverb.inventori.localhost`)
+      - traefik.http.routers.inventori-reverb.entrypoints=web
+      - traefik.http.services.inventori-reverb.loadbalancer.server.port=6001
+    networks:
+      - inventori
+
+  traefik:
+    image: traefik:v3.7.1
+    container_name: inventori_traefik
+    restart: unless-stopped
+    command:
+      - --api.dashboard=true
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - inventori
+
+networks:
+  inventori:
+    driver: bridge

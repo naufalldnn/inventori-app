@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Inventori - Halaman Utama</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body class="font-sans text-gray-900 antialiased">
+    <!-- Navigation -->
+    <nav class="border-b border-gray-100 bg-white">
+        <div class="mx-auto max-w-7xl px-6 py-4 sm:px-8">
+            <div class="flex items-center justify-between">
+                <div class="text-2xl font-bold text-ink">Inventori 6A1</div>
+                <div class="flex items-center gap-4">
+                    @auth
+                        <span class="text-sm text-gray-600">{{ auth()->user()->name }}</span>
+                        <form method="post" action="{{ route('logout') }}" class="inline">
+                            @csrf
+                            <button type="submit" class="rounded bg-coral px-4 py-2 text-sm font-semibold text-white hover:bg-coral/90">
+                                Keluar
+                            </button>
+                        </form>
+                    @else
+                        <a href="{{ route('login') }}" class="rounded bg-ink px-4 py-2 text-sm font-semibold text-white hover:bg-ink/90">
+                            Masuk
+                        </a>
+                    @endauth
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-br from-ink to-ink/80 py-20 text-white">
+        <div class="mx-auto max-w-7xl px-6 sm:px-8">
+            <div class="text-center">
+                <h1 class="text-4xl font-bold sm:text-5xl">Sistem Inventori Terpadu</h1>
+                <p class="mt-4 text-lg text-white/80">Kelola stok barang dengan mudah dan efisien</p>
+                <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+                    @auth
+                        <a href="{{ route('checkout.index') }}" class="rounded bg-moss px-6 py-3 font-semibold text-white hover:bg-moss/90">
+                            Lakukan Checkout
+                        </a>
+                        <a href="{{ route('dashboard') }}" class="rounded bg-white/20 px-6 py-3 font-semibold text-white hover:bg-white/30">
+                            Ke Dashboard
+                        </a>
+                    @else
+                        <a href="{{ route('login') }}" class="rounded bg-moss px-6 py-3 font-semibold text-white hover:bg-moss/90">
+                            Masuk Sekarang
+                        </a>
+                        <a href="{{ route('register') }}" class="rounded bg-white/20 px-6 py-3 font-semibold text-white hover:bg-white/30">
+                            Daftar
+                        </a>
+                    @endauth
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-16">
+        <div class="mx-auto max-w-7xl px-6 sm:px-8">
+            <h2 class="text-center text-3xl font-bold">Fitur Unggulan</h2>
+            <div class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                <!-- Feature 1 -->
+                <div class="rounded-lg border border-gray-200 bg-white p-6">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-moss/10">
+                        <svg class="h-6 w-6 text-moss" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="mt-4 text-lg font-semibold">Manajemen Stok</h3>
+                    <p class="mt-2 text-gray-600">Pantau dan kelola stok barang secara real-time dengan sistem yang akurat dan terpercaya.</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="rounded-lg border border-gray-200 bg-white p-6">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-moss/10">
+                        <svg class="h-6 w-6 text-moss" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="mt-4 text-lg font-semibold">Pembayaran Aman</h3>
+                    <p class="mt-2 text-gray-600">Integrasi dengan Doku Payment Gateway untuk transaksi yang aman dan terpercaya.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="rounded-lg border border-gray-200 bg-white p-6">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-moss/10">
+                        <svg class="h-6 w-6 text-moss" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="mt-4 text-lg font-semibold">Laporan Detail</h3>
+                    <p class="mt-2 text-gray-600">Dapatkan laporan lengkap tentang transaksi dan stok barang dalam format yang mudah dipahami.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="bg-gray-50 py-16">
+        <div class="mx-auto max-w-7xl px-6 sm:px-8">
+            <div class="grid gap-8 sm:grid-cols-3 text-center">
+                <div>
+                    <div class="text-3xl font-bold text-ink">100+</div>
+                    <p class="mt-2 text-gray-600">Pengguna Aktif</p>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-ink">1000+</div>
+                    <p class="mt-2 text-gray-600">Barang Terjaga</p>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-ink">99.9%</div>
+                    <p class="mt-2 text-gray-600">Uptime Sistem</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-100 bg-white py-8">
+        <div class="mx-auto max-w-7xl px-6 text-center text-sm text-gray-600 sm:px-8">
+            <p>&copy; 2024 Inventori 6A1. Semua hak dilindungi.</p>
+        </div>
+    </footer>
+</body>
+</html>
