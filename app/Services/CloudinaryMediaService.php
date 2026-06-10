@@ -33,11 +33,13 @@ class CloudinaryMediaService
             'folder' => config('services.cloudinary.folder'),
         ]);
 
+        $params['api_key'] = $this->apiKey();
+        $signature = $this->signature($params);
+
         $response = Http::attach('file', fopen($file->getRealPath(), 'r'), $file->getClientOriginalName())
             ->post("https://api.cloudinary.com/v1_1/{$cloudName}/{$resourceType}/upload", [
                 ...$params,
-                'api_key' => $this->apiKey(),
-                'signature' => $this->signature($params),
+                'signature' => $signature,
             ])
             ->throw()
             ->json();
