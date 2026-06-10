@@ -11,6 +11,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ReportEntryController;
 use App\Http\Controllers\StockTransactionController;
 use App\Http\Controllers\TrackingController;
 use Illuminate\Support\Facades\Route;
@@ -53,6 +54,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/reports/stock/pdf', [ReportController::class, 'stockPdf'])->name('reports.stock.pdf')->middleware('role:admin,petugas');
     Route::get('/reports/transactions/{type}', [ReportController::class, 'transactions'])->name('reports.transactions')->middleware('role:admin,petugas');
     Route::get('/reports/transactions/{type}/pdf', [ReportController::class, 'transactionsPdf'])->name('reports.transactions.pdf')->middleware('role:admin,petugas');
+    Route::resource('report-entries', ReportEntryController::class)->middleware('role:admin,petugas');
 
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index')->middleware('role:admin,petugas');
     Route::post('/notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('notifications.read')->middleware('role:admin,petugas');
