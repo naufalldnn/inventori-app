@@ -34,6 +34,7 @@
                             ['Laporan Stok', 'reports.stock'],
                             ['Laporan Masuk', 'reports.transactions', ['type' => 'in']],
                             ['Laporan Keluar', 'reports.transactions', ['type' => 'out']],
+                            ['Catatan Laporan', 'report-entries.index'],
                             ['Notifikasi', 'notifications.index'],
                             ['Chat Internal', 'chat.index'],
                         ];
