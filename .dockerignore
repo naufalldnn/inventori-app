@@ -3,4 +3,5 @@
 vendor
 node_modules
 public/build
+public/storage
 storage/logs/*.log
