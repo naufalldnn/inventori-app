@@ -48,7 +48,7 @@ class DokuPaymentService
 
         $targetPath = '/checkout/v1/payment';
         $lineItems = $lineItems ?: [[
-            'name' => $description ?: 'Pesanan inventori',
+            'name' => $description ?: 'Pesanan NDN',
             'quantity' => 1,
             'price' => $amount,
             'category' => 'retail',

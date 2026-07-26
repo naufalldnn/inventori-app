@@ -1,7 +1,7 @@
 services:
   app:
     build: .
-    container_name: inventori_app
+    container_name: ndn_app
     restart: unless-stopped
     env_file:
       - .env
@@ -11,9 +11,9 @@ services:
       - /var/www/html/node_modules
     labels:
       - traefik.enable=true
-      - traefik.http.routers.inventori.rule=Host(`inventori.localhost`) || Host(`localhost`)
-      - traefik.http.routers.inventori.entrypoints=web
-      - traefik.http.services.inventori.loadbalancer.server.port=8000
+      - traefik.http.routers.ndn.rule=Host(`ndn.localhost`) || Host(`inventori.localhost`) || Host(`localhost`)
+      - traefik.http.routers.ndn.entrypoints=web
+      - traefik.http.services.ndn.loadbalancer.server.port=8000
     depends_on:
       - reverb
     networks:
@@ -21,7 +21,7 @@ services:
 
   queue:
     build: .
-    container_name: inventori_queue
+    container_name: ndn_queue
     restart: unless-stopped
     env_file:
       - .env
@@ -35,7 +35,7 @@ services:
 
   reverb:
     build: .
-    container_name: inventori_reverb
+    container_name: ndn_reverb
     restart: unless-stopped
     env_file:
       - .env
@@ -48,15 +48,15 @@ services:
       - /var/www/html/node_modules
     labels:
       - traefik.enable=true
-      - traefik.http.routers.inventori-reverb.rule=Host(`reverb.inventori.localhost`)
-      - traefik.http.routers.inventori-reverb.entrypoints=web
-      - traefik.http.services.inventori-reverb.loadbalancer.server.port=6001
+      - traefik.http.routers.ndn-reverb.rule=Host(`reverb.ndn.localhost`) || Host(`reverb.inventori.localhost`)
+      - traefik.http.routers.ndn-reverb.entrypoints=web
+      - traefik.http.services.ndn-reverb.loadbalancer.server.port=6001
     networks:
       - inventori
 
   traefik:
     image: traefik:v3.7.1
-    container_name: inventori_traefik
+    container_name: ndn_traefik
     restart: unless-stopped
     command:
       - --api.dashboard=true
@@ -69,6 +69,58 @@ services:
       - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - inventori
+
+  test:
+    build:
+      context: .
+      args:
+        INSTALL_DEV: "true"
+    profiles:
+      - test
+    environment:
+      APP_NAME: NDN
+      APP_ENV: testing
+      APP_KEY: base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+      APP_DEBUG: "true"
+      APP_URL: http://localhost
+      DB_CONNECTION: pgsql
+      DB_HOST: test-db
+      DB_PORT: 5432
+      DB_DATABASE: ndn_testing
+      DB_USERNAME: ndn
+      DB_PASSWORD: ndn
+      DB_SSLMODE: prefer
+      CACHE_STORE: file
+      QUEUE_CONNECTION: sync
+      SESSION_DRIVER: file
+      BROADCAST_CONNECTION: log
+      MAIL_MAILER: log
+    command: sh -lc "php artisan migrate:fresh --force && ./vendor/bin/phpunit"
+    depends_on:
+      test-db:
+        condition: service_healthy
+    volumes:
+      - .:/var/www/html
+      - /var/www/html/vendor
+      - /var/www/html/node_modules
+    networks:
+      - inventori
+
+  test-db:
+    image: postgres:16-alpine
+    profiles:
+      - test
+    environment:
+      POSTGRES_DB: ndn_testing
+      POSTGRES_USER: ndn
+      POSTGRES_PASSWORD: ndn
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ndn -d ndn_testing"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     networks:
       - inventori
 

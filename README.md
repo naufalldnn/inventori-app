@@ -1,4 +1,4 @@
-# Inventori Laravel 12
+# NDN Laravel 12
 
 Aplikasi inventori berbasis Laravel 12 untuk mengelola kategori, barang, stok masuk/keluar, laporan PDF, checkout pembayaran, tracking pesanan, notifikasi, dan chat internal real-time.
 
@@ -74,10 +74,17 @@ Untuk menjalankan tanpa Docker, gunakan PHP 8.2+, Composer, Node.js, NPM, dan Po
 
 6. Akses aplikasi:
 
-   - Aplikasi: http://inventori.localhost
+   - Aplikasi: http://ndn.localhost
+   - Host lama tetap aktif: http://inventori.localhost
    - Alternatif lokal: http://localhost
    - Traefik dashboard: http://localhost:8080/dashboard/
    - Reverb/WebSocket: ws://localhost:6001
+
+7. Jalankan smoke test Docker:
+
+   ```bash
+   docker compose --profile test run --rm test
+   ```
 
 ## Service Docker
 
@@ -90,10 +97,10 @@ Docker Compose menjalankan service berikut:
 
 Nama container yang dibuat:
 
-- `inventori_app`
-- `inventori_queue`
-- `inventori_reverb`
-- `inventori_traefik`
+- `ndn_app`
+- `ndn_queue`
+- `ndn_reverb`
+- `ndn_traefik`
 
 ## Command Harian
 
@@ -165,7 +172,7 @@ GOOGLE_REDIRECT_URI=http://localhost/auth/google/callback
 Jika memakai domain lokal utama, redirect URI dapat disesuaikan menjadi:
 
 ```env
-GOOGLE_REDIRECT_URI=http://inventori.localhost/auth/google/callback
+GOOGLE_REDIRECT_URI=http://ndn.localhost/auth/google/callback
 ```
 
 ### Doku
@@ -201,7 +208,7 @@ Isi konfigurasi berikut jika upload media item memakai Cloudinary:
 CLOUDINARY_CLOUD_NAME=
 CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=
-CLOUDINARY_FOLDER=inventori/items
+CLOUDINARY_FOLDER=ndn/items
 ```
 
 ### Binderbyte
@@ -228,6 +235,6 @@ BINDERBYTE_COURIER=jnt
 
 - Jangan commit `.env` karena berisi credential.
 - Gunakan `.env.example` sebagai template environment baru.
-- Jalankan command Compose dengan nama service, misalnya `app`, bukan nama container `inventori_app`.
+- Jalankan command Compose dengan nama service, misalnya `app`, bukan nama container `ndn_app`.
 - Reverb berjalan di port `6001`.
-- Traefik menangani routing untuk `inventori.localhost` dan `localhost`.
+- Traefik menangani routing untuk `ndn.localhost`, `inventori.localhost`, dan `localhost`.

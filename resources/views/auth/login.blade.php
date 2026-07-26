@@ -4,9 +4,9 @@
 <div class="grid min-h-screen px-4 py-8 lg:grid-cols-[1fr_30rem] lg:px-0 lg:py-0">
     <section class="hidden border-r border-line bg-white px-10 py-12 lg:flex lg:flex-col lg:justify-between">
         <a href="{{ route('home') }}" class="flex items-center gap-3">
-            <span class="grid h-11 w-11 place-items-center rounded-lg bg-ocean text-sm font-black text-white">I6</span>
+            <img src="{{ asset('ndn-logo.svg') }}" alt="NDN" class="h-11 w-11 rounded-lg shadow-sm">
             <span>
-                <span class="block text-lg font-black leading-tight">Inventori 6A1</span>
+                <span class="block text-lg font-black leading-tight">NDN</span>
                 <span class="block text-xs font-semibold text-slate-500">Workspace persediaan</span>
             </span>
         </a>

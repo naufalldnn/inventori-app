@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">NDN</title>
+  <desc id="desc">Logo monogram NDN putih di atas latar hitam.</desc>
+  <rect width="256" height="256" fill="#000"/>
+  <circle cx="128" cy="128" r="70" fill="none" stroke="#fff" stroke-width="16"/>
+  <path d="M94 190V66h22l45 74V66h22v124h-22l-45-74v74z" fill="#fff"/>
+  <rect x="74" y="66" width="16" height="124" fill="#000"/>
+  <rect x="184" y="66" width="16" height="124" fill="#000"/>
+</svg>

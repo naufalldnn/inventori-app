@@ -4,16 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
-    <title>Inventori 6A1 - Katalog Barang</title>
+    <title><?php echo e(config('app.name')); ?> - Katalog Barang</title>
+    <link rel="icon" href="<?php echo e(asset('ndn-logo.svg')); ?>" type="image/svg+xml">
     <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 </head>
 <body class="font-sans text-ink antialiased">
     <header class="sticky top-0 z-20 border-b border-line bg-white/85 backdrop-blur">
         <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
             <a href="<?php echo e(route('home')); ?>" class="flex items-center gap-3">
-                <span class="grid h-10 w-10 place-items-center rounded-lg bg-ocean text-sm font-black text-white shadow-sm">I6</span>
+                <img src="<?php echo e(asset('ndn-logo.svg')); ?>" alt="NDN" class="h-10 w-10 rounded-lg shadow-sm">
                 <span>
-                    <span class="block text-base font-black leading-tight">Inventori 6A1</span>
+                    <span class="block text-base font-black leading-tight">NDN</span>
                     <span class="block text-xs font-semibold text-slate-500">Katalog stok sekolah</span>
                 </span>
             </a>

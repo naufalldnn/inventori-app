@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name') }}</title>
+    <link rel="icon" href="{{ asset('ndn-logo.svg') }}" type="image/svg+xml">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans text-ink antialiased">
@@ -13,9 +14,9 @@
         <aside class="border-b border-line bg-white/90 backdrop-blur lg:sticky lg:top-0 lg:min-h-screen lg:border-b-0 lg:border-r">
             <div class="flex items-center justify-between px-5 py-5">
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
-                    <span class="grid h-10 w-10 place-items-center rounded-lg bg-ocean text-sm font-black text-white shadow-sm">I6</span>
+                    <img src="{{ asset('ndn-logo.svg') }}" alt="NDN" class="h-10 w-10 rounded-lg shadow-sm">
                     <span>
-                        <span class="block text-base font-black leading-tight tracking-tight">Inventori 6A1</span>
+                        <span class="block text-base font-black leading-tight tracking-tight">NDN</span>
                         <span class="block text-xs font-semibold text-slate-500">Stock control panel</span>
                     </span>
                 </a>
